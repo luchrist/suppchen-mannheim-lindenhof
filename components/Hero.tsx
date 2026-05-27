@@ -29,7 +29,7 @@ export function Hero() {
     };
 
     tryPlay();
-    [50, 200, 500, 1500, 3000].forEach((ms) => timers.push(window.setTimeout(tryPlay, ms)));
+    [50, 200, 500, 1500, 3000].forEach((ms) => timers.push(setTimeout(tryPlay, ms)));
 
     const onPlaying = () => {
       started = true;
