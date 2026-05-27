@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     `Kneipe ${restaurant.address.city}`,
     `Kneipe Lindenhof`,
     `Bar ${restaurant.address.city}`,
-    `Eckkneipe ${restaurant.address.city}`,
+    `Traditionelle Kneipe ${restaurant.address.city}`,
   ],
   openGraph: {
     title: SEO_TITLE,

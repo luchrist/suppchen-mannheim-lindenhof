@@ -70,7 +70,7 @@ const looksLikeRealMenu = menuCategories.every((c) =>
 const config: RestaurantConfigBridge = {
   name: restaurant.name,
   tagline: "Kneipe in Mannheim-Lindenhof",
-  intro: "Das Süppchen ist die Eckkneipe in der Meerfeldstraße im Mannheimer Lindenhof. Kühle Getränke, gute Musik und ein Tresen, an dem Geselligkeit Vorrang hat.",
+  intro: "Das Süppchen ist die Kneipe in der Meerfeldstraße im Mannheimer Lindenhof. Kühle Getränke, gute Musik und ein Tresen, an dem Geselligkeit Vorrang hat.",
   address: {
     street: restaurant.address.street,
     city: restaurant.address.cityLine,

@@ -18,8 +18,10 @@ export function Hero() {
       show();
     }
 
-    // iPad Safari may block autoplay even when muted — show first frame anyway
+    // iPad/iPhone Safari may block autoplay even when muted — and iOS Low Power
+    // Mode blocks it entirely and cannot be forced. Show the poster frame anyway.
     video.play().catch(show);
+    const posterFallback = window.setTimeout(show, 800);
 
     // Fallback: try to play on first user interaction (iPad with autoplay disabled)
     const tryPlay = () => {
@@ -38,6 +40,7 @@ export function Hero() {
     document.addEventListener("visibilitychange", onVisible);
 
     return () => {
+      window.clearTimeout(posterFallback);
       video.removeEventListener("playing", show);
       document.removeEventListener("touchstart", tryPlay);
       document.removeEventListener("click", tryPlay);
@@ -55,6 +58,7 @@ export function Hero() {
         loop
         muted
         playsInline
+        poster="/hero-poster.webp"
         preload="auto"
         disableRemotePlayback
         {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
@@ -70,7 +74,7 @@ export function Hero() {
         <div className="w-full max-w-[1400px] mx-auto px-6 pb-20 md:px-10 md:pb-28 lg:px-14">
           <div className="max-w-lg">
             <h1 className="font-display text-[36px] leading-[0.95] tracking-tight text-bone sm:text-[44px] md:text-[58px] lg:text-[68px] drop-shadow-lg">
-              Eckkneipe
+              Kneipe
               <br />
               <span className="italic text-messing-300">im Lindenhof.</span>
             </h1>
