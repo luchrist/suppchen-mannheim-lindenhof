@@ -4,62 +4,85 @@ import { useEffect, useRef, useState } from "react";
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const show = () => setVideoReady(true);
+    // Force-mute (iOS may reset it between SPA navigations).
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
 
-    video.addEventListener("playing", show, { once: true });
+    let cancelled = false;
+    let started = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
-    if (video.readyState >= 2) {
-      show();
-    }
-
-    // iPad/iPhone Safari may block autoplay even when muted — and iOS Low Power
-    // Mode blocks it entirely and cannot be forced. Show the poster frame anyway.
-    video.play().catch(show);
-    const posterFallback = window.setTimeout(show, 800);
-
-    // Fallback: try to play on first user interaction (iPad with autoplay disabled)
+    // Never reveal a paused <video> — iOS draws a "tap to play" overlay over it.
+    // We only flip `playing` on the real "playing" event; until then the poster
+    // <img> shows. iOS Low Power Mode blocks autoplay entirely, so we also retry
+    // play() on every user gesture (which carries the activation iOS requires).
     const tryPlay = () => {
+      if (cancelled || started) return;
       video.play().catch(() => {});
-      show();
     };
-    document.addEventListener("touchstart", tryPlay, { once: true });
-    document.addEventListener("click", tryPlay, { once: true });
 
-    // Resume video after screen wake / tab refocus
+    tryPlay();
+    [50, 200, 500, 1500, 3000].forEach((ms) => timers.push(window.setTimeout(tryPlay, ms)));
+
+    const onPlaying = () => {
+      started = true;
+      setPlaying(true);
+      removeGestureListeners();
+    };
+    video.addEventListener("playing", onPlaying);
+
+    const onLoaded = () => tryPlay();
+    video.addEventListener("loadeddata", onLoaded);
+    video.addEventListener("canplay", onLoaded);
+
+    const gestureEvents = ["touchstart", "touchend", "pointerdown", "click", "scroll", "keydown", "wheel"] as const;
+    const onGesture = () => tryPlay();
+    gestureEvents.forEach((ev) => window.addEventListener(ev, onGesture, { passive: true }));
+    const removeGestureListeners = () => gestureEvents.forEach((ev) => window.removeEventListener(ev, onGesture));
+
     const onVisible = () => {
-      if (document.visibilityState === "visible") {
-        video.play().catch(() => {});
-      }
+      if (document.visibilityState === "visible") tryPlay();
     };
     document.addEventListener("visibilitychange", onVisible);
 
     return () => {
-      window.clearTimeout(posterFallback);
-      video.removeEventListener("playing", show);
-      document.removeEventListener("touchstart", tryPlay);
-      document.removeEventListener("click", tryPlay);
+      cancelled = true;
+      timers.forEach(clearTimeout);
+      video.removeEventListener("playing", onPlaying);
+      video.removeEventListener("loadeddata", onLoaded);
+      video.removeEventListener("canplay", onLoaded);
+      removeGestureListeners();
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
   return (
     <section className="relative h-[100dvh] overflow-hidden bg-ink">
+      {/* Poster frame — shown until the video actually plays. No `poster` attr:
+          that makes iOS draw a tappable play-button overlay. */}
+      <img
+        src="/hero-poster.webp"
+        alt=""
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${playing ? "opacity-0" : "opacity-100"}`}
+      />
       {/* Video background */}
       <video
         ref={videoRef}
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
+        className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${playing ? "opacity-100" : "opacity-0"}`}
         autoPlay
         loop
         muted
         playsInline
-        poster="/hero-poster.webp"
         preload="auto"
+        controls={false}
         disableRemotePlayback
         {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
       >
