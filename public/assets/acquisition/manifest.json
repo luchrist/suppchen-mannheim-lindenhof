@@ -1,0 +1,20 @@
+[
+  {
+    "originalFile": "scraped-02.jpg",
+    "file": "photos/restaurant/bar-innenraum-mit-gasten-01.jpg",
+    "category": "restaurant",
+    "quality": "high",
+    "subject": "Bar-Innenraum mit Gästen",
+    "subjectSlug": "bar-innenraum-mit-gasten",
+    "description": "Das Foto zeigt den Innenraum einer Bar mit Gästen, die an der Theke sitzen und stehen."
+  },
+  {
+    "originalFile": "api-02.jpg",
+    "file": "photos/restaurant/bar-innenraum-mit-gasten-02.jpg",
+    "category": "restaurant",
+    "quality": "high",
+    "subject": "Bar-Innenraum mit Gästen",
+    "subjectSlug": "bar-innenraum-mit-gasten",
+    "description": "Ein Blick in den Innenraum einer Bar mit Gästen an der Theke und Regalen voller Flaschen."
+  }
+]
