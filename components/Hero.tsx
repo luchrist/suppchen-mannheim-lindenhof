@@ -64,6 +64,7 @@ export function Hero() {
         {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
       >
         <source src="/hero-bg.webm" type="video/webm" />
+        <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
 
       {/* Dark overlay for text readability */}
