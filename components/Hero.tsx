@@ -65,9 +65,6 @@ export function Hero() {
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/40 to-ink/30" />
 
-      {/* Bottom edge fade for smooth transition to next section */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-bone to-transparent" />
-
       {/* Content */}
       <div className="relative z-20 flex h-full items-end">
         <div className="w-full max-w-[1400px] mx-auto px-6 pb-20 md:px-10 md:pb-28 lg:px-14">
